@@ -1,0 +1,123 @@
+# NoteApp
+
+Aplicación minimalista de notas hecha con React Native y TypeScript. Permite guardar, editar, eliminar y categorizar notas de manera profesional y rápida.
+
+## Características
+
+- Agrega notas rápidamente en una sola pantalla
+- Selecciona categoría: Teología o Filosofía
+- Edita y elimina notas fácilmente
+- Persistencia local usando AsyncStorage
+- Interfaz minimalista y profesional
+
+## Instalación
+
+1. Clona el repositorio:
+   ```
+   git clone https://github.com/tuusuario/noteapp.git
+   ```
+2. Instala las dependencias:
+   ```
+   npm install
+   ```
+3. Inicia la app en modo desarrollo:
+   ```
+   npx expo start
+   ```
+
+## Estructura del proyecto
+
+```
+noteapp/
+│
+├── App.tsx
+├── src/
+│   ├── components/
+│   │   ├── NoteInput.tsx
+│   │   └── CategorySelector.tsx
+│   ├── screens/
+│   │   └── NotesScreen.tsx
+│   └── types/
+│       └── Note.ts
+├── package.json
+└── README.md
+```
+
+## Tecnologías usadas
+
+- [React Native](https://reactnative.dev/)
+- [Expo](https://expo.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [AsyncStorage](https://react-native-async-storage.github.io/async-storage/)
+
+## Autor
+
+- [Tu Nombre](https://github.com/tuusuario)
+
+---
+
+¡Listo!  
+Crea un archivo llamado `README.md` en la raíz de tu proyecto y copia allí tu versión personalizada de este contenido.
+
+¿Quieres agregar una sección especial o necesitas ayuda con algún detalle del README?# NoteApp
+
+Aplicación minimalista de notas hecha con React Native y TypeScript. Permite guardar, editar, eliminar y categorizar notas de manera profesional y rápida.
+
+## Características
+
+- Agrega notas rápidamente en una sola pantalla
+- Selecciona categoría: Teología o Filosofía
+- Edita y elimina notas fácilmente
+- Persistencia local usando AsyncStorage
+- Interfaz minimalista y profesional
+
+## Instalación
+
+1. Clona el repositorio:
+   ```
+   git clone https://github.com/tuusuario/noteapp.git
+   ```
+2. Instala las dependencias:
+   ```
+   npm install
+   ```
+3. Inicia la app en modo desarrollo:
+   ```
+   npx expo start
+   ```
+
+## Estructura del proyecto
+
+```
+noteapp/
+│
+├── App.tsx
+├── src/
+│   ├── components/
+│   │   ├── NoteInput.tsx
+│   │   └── CategorySelector.tsx
+│   ├── screens/
+│   │   └── NotesScreen.tsx
+│   └── types/
+│       └── Note.ts
+├── package.json
+└── README.md
+```
+
+## Tecnologías usadas
+
+- [React Native](https://reactnative.dev/)
+- [Expo](https://expo.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [AsyncStorage](https://react-native-async-storage.github.io/async-storage/)
+
+## Autor
+
+- [Tu Nombre](https://github.com/tuusuario)
+
+---
+
+¡Listo!  
+Crea un archivo llamado `README.md` en la raíz de tu proyecto y copia allí tu versión personalizada de este contenido.
+
+¿Quieres agregar una sección especial o necesitas ayuda con algún detalle del
