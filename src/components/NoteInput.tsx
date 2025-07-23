@@ -73,7 +73,6 @@ const NoteInput: React.FC<NoteInputProps> = ({ onAddNote, noteToEdit, onEditNote
 const styles = StyleSheet.create({
   container: {
     marginBottom: 16,
-    width: '100%',
   },
   input: {
     borderWidth: 1,
