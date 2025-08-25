@@ -1,0 +1,56 @@
+# C:\Aps\NoteApp\.gitignore
+
+# Node
+node_modules/
+.npm/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.log
+
+# Expo
+.expo/
+web-build/
+dist/
+
+# Android
+android/.gradle/
+android/app/build/
+android/build/
+android/.idea/
+android/*.iml
+android/local.properties
+android/gradlew
+android/gradlew.bat
+
+# iOS
+ios/build/
+ios/Pods/
+ios/.symlinks/
+ios/.xcode.env.local
+
+# macOS
+.DS_Store
+
+# VSCode
+.vscode/
+
+# Environment variables
+.env
+.env.*
+
+# Miscellaneous
+*~
+*.swp
+*.bak
+*.orig
+*.pyc
+*.pyo
+__pycache__/
+
+# EAS Build
+*.aab
+*.apk
+*.ipa
