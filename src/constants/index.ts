@@ -15,10 +15,8 @@ export const STORAGE_KEY = '@NoteApp:notes';
  * Puedes expandir o modificar estas categorías según las necesidades de tu aplicación.
  */
 export const CATEGORIES: Category[] = [
-  { name: 'Teología', icon: 'book' }, // Puedes usar iconos de una librería o SVGs
-  { name: 'Filosofía', icon: 'lightbulb' },
-  { name: 'General', icon: 'clipboard' },
-  { name: 'Personal', icon: 'user' },
+  { name: 'Teologia', icon: 'book' }, // Puedes usar iconos de una librería o SVGs
+  { name: 'Filosofia', icon: 'lightbulb' },
 ];
 
 /**

@@ -1,6 +1,6 @@
 // src/components/NoteCard.tsx
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Easing } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Note } from '../types';
 import { THEME_COLORS } from '../constants';
@@ -26,6 +26,9 @@ interface NoteCardProps {
  * @returns {JSX.Element} El componente NoteCard renderizado.
  */
 const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete }) => {
+  const [isPreview, setIsPreview] = useState(true); // Estado para alternar entre vista previa y vista completa
+  const [animation] = useState(new Animated.Value(0)); // Valor de animación
+  
   // Formatea el timestamp a una fecha legible
   const formattedDate = new Date(note.timestamp).toLocaleDateString('es-ES', {
     year: 'numeric',
@@ -35,29 +38,78 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete }) => {
     minute: '2-digit',
   });
 
-  return (
-    <LinearGradient
-      colors={[THEME_COLORS.secondary, THEME_COLORS.tertiary]}
-      style={styles.cardContainer}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-    >
-      <Text style={styles.categoryText}>{note.category}</Text>
-      <Text style={styles.titleText}>{note.title}</Text>
-      <Text style={styles.contentText} numberOfLines={3}>
-        {note.content}
-      </Text>
-      <Text style={styles.dateText}>{formattedDate}</Text>
+  // Efecto de entrada de la tarjeta
+  React.useEffect(() => {
+    Animated.timing(animation, {
+      toValue: 1,
+      duration: 300,
+      easing: Easing.ease,
+      useNativeDriver: true,
+    }).start();
+  }, []);
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={[styles.button, styles.editButton]} onPress={onEdit}>
-          <Text style={styles.buttonText}>Editar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={onDelete}>
-          <Text style={styles.buttonText}>Eliminar</Text>
-        </TouchableOpacity>
-      </View>
-    </LinearGradient>
+  // Interpolación para la animación de entrada
+  const scale = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.8, 1],
+  });
+
+  const opacity = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
+
+  return (
+    <Animated.View
+      style={[
+        styles.animatedContainer,
+        {
+          transform: [{ scale }],
+          opacity,
+        },
+      ]}
+    >
+      <LinearGradient
+        colors={[THEME_COLORS.secondary, THEME_COLORS.tertiary]}
+        style={styles.cardContainer}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        <Text style={styles.categoryText} accessibilityLabel={`Categoría: ${note.category}`}>{note.category}</Text>
+        <Text style={styles.titleText} accessibilityLabel={`Título: ${note.title}`}>{note.title}</Text>
+        <Text style={styles.contentText} numberOfLines={isPreview ? 3 : undefined} accessibilityLabel={`Contenido: ${note.content}`}>
+          {note.content}
+        </Text>
+        <Text style={styles.dateText} accessibilityLabel={`Fecha: ${formattedDate}`}>{formattedDate}</Text>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[styles.button, styles.previewButton]}
+            onPress={() => setIsPreview(!isPreview)}
+            accessibilityLabel={isPreview ? 'Ver más contenido' : 'Ver menos contenido'}
+            accessibilityHint="Toca para expandir o contraer el contenido de la nota"
+          >
+            <Text style={styles.buttonText}>{isPreview ? 'Ver más' : 'Ver menos'}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, styles.editButton]}
+            onPress={onEdit}
+            accessibilityLabel="Editar nota"
+            accessibilityHint="Toca para editar esta nota"
+          >
+            <Text style={styles.buttonText}>Editar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, styles.deleteButton]}
+            onPress={onDelete}
+            accessibilityLabel="Eliminar nota"
+            accessibilityHint="Toca para eliminar esta nota"
+          >
+            <Text style={styles.buttonText}>Eliminar</Text>
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
+    </Animated.View>
   );
 };
 
@@ -119,6 +171,13 @@ const styles = StyleSheet.create({
     color: THEME_COLORS.lightText,
     fontWeight: 'bold',
     fontSize: 14,
+  },
+  previewButton: {
+    backgroundColor: THEME_COLORS.primary,
+  },
+  animatedContainer: {
+    width: '100%',
+    alignItems: 'center',
   },
 });
 

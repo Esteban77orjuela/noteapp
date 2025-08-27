@@ -11,15 +11,18 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.1.2",
     "expo": "~53.0.22",
+    "expo-dev-client": "~5.2.4",
     "expo-linear-gradient": "~14.1.5",
     "expo-status-bar": "~2.2.3",
     "react": "19.0.0",
     "react-native": "0.79.6",
     "react-native-safe-area-context": "^5.6.1",
-    "expo-dev-client": "~5.2.4"
+    "react-native-toast-message": "^2.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@testing-library/react-native": "^13.3.2",
+    "@types/jest": "^30.0.0",
     "@types/react": "~19.0.10",
     "typescript": "~5.8.3"
   },

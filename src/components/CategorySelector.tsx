@@ -10,10 +10,14 @@ import { LinearGradient } from 'expo-linear-gradient';
  * @description Propiedades para el componente CategorySelector.
  * @property {string} selectedCategory - La categoría actualmente seleccionada.
  * @property {(category: string) => void} onSelectCategory - Función que se llama cuando se selecciona una categoría.
+ * @property {string} [accessibilityLabel] - Etiqueta de accesibilidad para el selector.
+ * @property {string} [accessibilityHint] - Sugerencia de accesibilidad para el selector.
  */
 interface CategorySelectorProps {
   selectedCategory: string;
   onSelectCategory: (category: string) => void;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
 }
 
 /**
@@ -26,12 +30,18 @@ interface CategorySelectorProps {
 const CategorySelector: React.FC<CategorySelectorProps> = ({
   selectedCategory,
   onSelectCategory,
+  accessibilityLabel,
+  accessibilityHint,
 }) => {
-  // Añade una opción para ver "Todas" las notas
-  const allCategories = [{ name: 'Todas', icon: 'list' }, ...CATEGORIES];
+  // Usar solo las categorías definidas
+  const allCategories = CATEGORIES;
 
   return (
-    <View style={styles.container}>
+    <View
+      style={styles.container}
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={accessibilityHint}
+    >
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -42,6 +52,8 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
             key={category.name}
             onPress={() => onSelectCategory(category.name)}
             style={styles.buttonWrapper}
+            accessibilityLabel={`Seleccionar categoría ${category.name}`}
+            accessibilityHint="Toca para filtrar notas por esta categoría"
           >
             <LinearGradient
               colors={

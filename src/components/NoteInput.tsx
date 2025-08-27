@@ -42,7 +42,7 @@ const NoteInput: React.FC<NoteInputProps> = ({
   onCancel,
   initialTitle = '',
   initialContent = '',
-  initialCategory = CATEGORIES[0].name, // Default to the first category
+  initialCategory = 'Teologia', // Default to Teologia category
 }) => {
   const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState(initialContent);
@@ -67,108 +67,85 @@ const NoteInput: React.FC<NoteInputProps> = ({
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <LinearGradient
-        colors={[THEME_COLORS.primary, THEME_COLORS.secondary]}
-        style={styles.gradientBackground}
-      >
-        <TextInput
-          style={styles.input}
-          placeholder="Título de la Nota"
-          placeholderTextColor="#ccc"
-          value={title}
-          onChangeText={setTitle}
-          maxLength={100} // Límite de caracteres para el título
-        />
-        <TextInput
-          style={[styles.input, styles.contentInput]}
-          placeholder="Contenido de la Nota"
-          placeholderTextColor="#ccc"
-          multiline
-          value={content}
-          onChangeText={setContent}
-          textAlignVertical="top" // Alinea el texto en la parte superior para multiline
-        />
+    <View style={styles.container}>
+      <Text style={{ color: 'black', fontSize: 20, textAlign: 'center', marginBottom: 20 }}>
+        Formulario de Nota
+      </Text>
+      
+      <TextInput
+        style={styles.input}
+        placeholder="Título de la Nota"
+        placeholderTextColor="#666"
+        value={title}
+        onChangeText={setTitle}
+        maxLength={100}
+      />
+      
+      <TextInput
+        style={[styles.input, styles.contentInput]}
+        placeholder="Contenido de la Nota"
+        placeholderTextColor="#666"
+        multiline
+        value={content}
+        onChangeText={setContent}
+        textAlignVertical="top"
+      />
 
-        <View style={styles.categorySelector}>
-          {CATEGORIES.map((category: Category) => (
-            <TouchableOpacity
-              key={category.name}
+      <View style={styles.categorySelector}>
+        {CATEGORIES.map((category: Category) => (
+          <TouchableOpacity
+            key={category.name}
+            style={[
+              styles.categoryButton,
+              selectedCategory === category.name && styles.selectedCategoryButton,
+            ]}
+            onPress={() => setSelectedCategory(category.name)}
+          >
+            <Text
               style={[
-                styles.categoryButton,
-                selectedCategory === category.name && styles.selectedCategoryButton,
+                styles.categoryButtonText,
+                selectedCategory === category.name && styles.selectedCategoryButtonText,
               ]}
-              onPress={() => setSelectedCategory(category.name)}
             >
-              <Text
-                style={[
-                  styles.categoryButtonText,
-                  selectedCategory === category.name && styles.selectedCategoryButtonText,
-                ]}
-              >
-                {category.name}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+              {category.name}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
 
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleSave}>
-            <LinearGradient
-              colors={[THEME_COLORS.accent, THEME_COLORS.primary]}
-              style={styles.buttonGradient}
-            >
-              <Text style={styles.buttonText}>Guardar</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={onCancel}>
-            <LinearGradient
-              colors={['#dc3545', '#c82333']} // Colores para el botón de cancelar
-              style={styles.buttonGradient}
-            >
-              <Text style={styles.buttonText}>Cancelar</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
-      </LinearGradient>
-    </KeyboardAvoidingView>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={handleSave}>
+          <View style={styles.buttonGradient}>
+            <Text style={styles.buttonText}>Guardar</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={onCancel}>
+          <View style={styles.buttonGradient}>
+            <Text style={styles.buttonText}>Cancelar</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 15,
-    overflow: 'hidden', // Asegura que el gradiente no se salga de los bordes redondeados
-    elevation: 10, // Sombra para Android
-    shadowColor: '#000', // Sombra para iOS
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-  },
-  gradientBackground: {
-    flex: 1,
     width: '100%',
     padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 15,
   },
   input: {
     width: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)', // Fondo semitransparente
+    backgroundColor: '#ffffff',
     borderRadius: 10,
     padding: 15,
     marginBottom: 15,
-    color: THEME_COLORS.lightText,
+    color: '#333333',
     fontSize: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.4)',
+    borderColor: '#dddddd',
   },
   contentInput: {
     height: 120,
@@ -176,7 +153,7 @@ const styles = StyleSheet.create({
   },
   categorySelector: {
     flexDirection: 'row',
-    flexWrap: 'wrap', // Permite que las categorías se envuelvan si hay muchas
+    flexWrap: 'wrap',
     justifyContent: 'center',
     marginBottom: 20,
   },
@@ -184,22 +161,22 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 15,
     borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: '#f0f0f0',
     margin: 5,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderColor: '#ddd',
   },
   selectedCategoryButton: {
     backgroundColor: THEME_COLORS.accent,
-    borderColor: THEME_COLORS.lightText,
+    borderColor: THEME_COLORS.accent,
   },
   categoryButtonText: {
-    color: THEME_COLORS.lightText,
+    color: '#333333',
     fontSize: 14,
     fontWeight: 'bold',
   },
   selectedCategoryButtonText: {
-    color: THEME_COLORS.lightText,
+    color: '#ffffff',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -218,9 +195,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10,
+    backgroundColor: THEME_COLORS.accent,
   },
   buttonText: {
-    color: THEME_COLORS.lightText,
+    color: '#ffffff',
     fontSize: 16,
     fontWeight: 'bold',
   },

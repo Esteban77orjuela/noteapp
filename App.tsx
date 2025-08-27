@@ -3,6 +3,7 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import Toast from 'react-native-toast-message';
 import NotesScreen from './src/screens/NotesScreen';
 import { THEME_COLORS } from './src/constants';
 
@@ -22,6 +23,7 @@ export default function App() {
           'auto' ajusta el estilo de la barra de estado automáticamente según el tema del sistema.
         */}
         <StatusBar style="auto" />
+        <Toast />
       </View>
     </SafeAreaProvider>
   );

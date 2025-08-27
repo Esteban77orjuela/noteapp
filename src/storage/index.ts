@@ -58,3 +58,49 @@ export const clearAllNotes = async (): Promise<void> => {
     throw e;
   }
 };
+
+/**
+ * @function exportNotes
+ * @description Exporta las notas a una cadena JSON.
+ * @param {Note[]} notes - Array de objetos Note a exportar.
+ * @returns {string} Una cadena JSON que representa las notas.
+ */
+export const exportNotes = (notes: Note[]): string => {
+  return JSON.stringify(notes, null, 2);
+};
+
+/**
+ * @function importNotes
+ * @description Importa notas desde una cadena JSON.
+ * @param {string} data - Cadena JSON que representa las notas.
+ * @returns {Note[]} Un array de objetos Note.
+ * @throws {Error} Si los datos no son válidos JSON o no representan notas válidas.
+ */
+export const importNotes = (data: string): Note[] => {
+  try {
+    const parsedData = JSON.parse(data);
+    
+    // Validar que los datos sean un array
+    if (!Array.isArray(parsedData)) {
+      throw new Error('Los datos importados no son un array válido');
+    }
+    
+    // Validar que cada elemento tenga las propiedades requeridas
+    for (const item of parsedData) {
+      if (
+        typeof item.id !== 'string' ||
+        typeof item.title !== 'string' ||
+        typeof item.content !== 'string' ||
+        typeof item.category !== 'string' ||
+        typeof item.timestamp !== 'number'
+      ) {
+        throw new Error('Los datos importados no tienen el formato correcto');
+      }
+    }
+    
+    return parsedData as Note[];
+  } catch (error) {
+    console.error('Error al importar notas:', error);
+    throw error;
+  }
+};
