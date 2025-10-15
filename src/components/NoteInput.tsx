@@ -1,5 +1,5 @@
 // src/components/NoteInput.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   TextInput,
@@ -8,10 +8,14 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { CATEGORIES, THEME_COLORS } from '../constants';
 import { Category } from '../types';
+import { improveNoteText } from '../application/services/ai';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /**
  * @interface NoteInputProps
@@ -28,34 +32,72 @@ interface NoteInputProps {
   initialTitle?: string;
   initialContent?: string;
   initialCategory?: string;
+  isEditing?: boolean;
 }
 
-/**
- * @function NoteInput
- * @description Componente de UI para introducir o editar el título, contenido y categoría de una nota.
- * Incluye campos de texto y un selector de categoría.
- * @param {NoteInputProps} props - Las propiedades del componente.
- * @returns {JSX.Element} El componente NoteInput renderizado.
- */
 const NoteInput: React.FC<NoteInputProps> = ({
   onSave,
   onCancel,
   initialTitle = '',
   initialContent = '',
   initialCategory = 'Teologia', // Default to Teologia category
+  isEditing = false,
 }) => {
   const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState(initialContent);
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
+  const [improving, setImproving] = useState<boolean>(false);
+  const draftKeyRef = useRef<string>('@NoteApp:draft:new');
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
-  /**
-   * @function handleSave
-   * @description Maneja la acción de guardar la nota.
-   * Llama a la prop `onSave` con los valores actuales de título, contenido y categoría.
-   */
+  useEffect(() => {
+    let mounted = true;
+    const loadDraft = async () => {
+      if (isEditing) return;
+      try {
+        const raw = await AsyncStorage.getItem(draftKeyRef.current);
+        if (!mounted || !raw) return;
+        const d = JSON.parse(raw);
+        if (d && typeof d === 'object') {
+          if (typeof d.title === 'string') setTitle(d.title);
+          if (typeof d.content === 'string') setContent(d.content);
+          if (typeof d.category === 'string') setSelectedCategory(d.category);
+        }
+      } catch (e) {
+        console.warn('No se pudo cargar el borrador');
+      }
+    };
+    loadDraft();
+    return () => {
+      mounted = false;
+    };
+  }, [isEditing]);
+
+  useEffect(() => {
+    if (isEditing) return;
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      const hasData = title.trim() || content.trim();
+      const payload = hasData
+        ? JSON.stringify({ title, content, category: selectedCategory, ts: Date.now() })
+        : null;
+      if (payload) {
+        AsyncStorage.setItem(draftKeyRef.current, payload).catch(() => {});
+      } else {
+        AsyncStorage.removeItem(draftKeyRef.current).catch(() => {});
+      }
+    }, 500);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [title, content, selectedCategory, isEditing]);
+
   const handleSave = () => {
     // Solo guarda si hay título y contenido
     if (title.trim() && content.trim()) {
+      if (!isEditing) {
+        AsyncStorage.removeItem(draftKeyRef.current).catch(() => {});
+      }
       onSave(title, content, selectedCategory);
       // Opcional: Limpiar los campos después de guardar si es una nueva nota
       // setTitle('');
@@ -63,6 +105,36 @@ const NoteInput: React.FC<NoteInputProps> = ({
     } else {
       // Podrías añadir una alerta o mensaje al usuario si los campos están vacíos
       console.warn('Title and content cannot be empty.');
+    }
+  };
+
+  const handleCancel = () => {
+    if (!isEditing) {
+      AsyncStorage.setItem(
+        draftKeyRef.current,
+        JSON.stringify({ title, content, category: selectedCategory, ts: Date.now() })
+      ).catch(() => {});
+    }
+    onCancel();
+  };
+
+  const handleImprove = async () => {
+    const raw = content.trim();
+    if (!raw) {
+      Alert.alert('Nada que mejorar', 'Escribe el contenido de la nota y vuelve a intentarlo.');
+      return;
+    }
+    try {
+      setImproving(true);
+      // Enfocado sólo en el contenido; no pasamos el título para que no influya.
+      const improved = await improveNoteText(raw, { category: selectedCategory });
+      setContent(improved);
+    } catch (e: any) {
+      const message = e?.message || 'No se pudo mejorar el texto.';
+      Alert.alert('No se pudo redactar mejor', message);
+      console.warn(message);
+    } finally {
+      setImproving(false);
     }
   };
 
@@ -119,9 +191,25 @@ const NoteInput: React.FC<NoteInputProps> = ({
             <Text style={styles.buttonText}>Guardar</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={onCancel}>
+        <TouchableOpacity style={styles.button} onPress={handleCancel}>
           <View style={styles.buttonGradient}>
             <Text style={styles.buttonText}>Cancelar</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.improveContainer}>
+        <TouchableOpacity
+          style={[styles.button, styles.improveButton]}
+          onPress={handleImprove}
+          disabled={improving || !content.trim()}
+        >
+          <View style={[styles.buttonGradient, styles.improveButtonInner, improving && { opacity: 0.85 }]}> 
+            {improving ? (
+              <ActivityIndicator color="#ffffff" />
+            ) : (
+              <Text style={styles.buttonText}>Redactar mejor</Text>
+            )}
           </View>
         </TouchableOpacity>
       </View>
@@ -201,6 +289,17 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  improveContainer: {
+    marginTop: 10,
+    width: '100%',
+  },
+  improveButton: {
+    flex: 0,
+    marginHorizontal: 10,
+  },
+  improveButtonInner: {
+    backgroundColor: '#4b8bff',
   },
 });
 

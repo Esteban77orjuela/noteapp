@@ -1,0 +1,45 @@
+import { ExpoConfig } from 'expo/config';
+
+// Lee la API Key desde variables de entorno en tiempo de build/arranque
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? '';
+
+const config: ExpoConfig = {
+  name: 'NoteApp',
+  slug: 'NoteApp',
+  version: '1.0.0',
+  orientation: 'portrait',
+  icon: './assets/icon.png',
+  userInterfaceStyle: 'light',
+  newArchEnabled: false,
+  splash: {
+    image: './assets/splash-icon.png',
+    resizeMode: 'contain',
+    backgroundColor: '#ffffff',
+  },
+  ios: {
+    supportsTablet: true,
+  },
+  android: {
+    adaptiveIcon: {
+      foregroundImage: './assets/adaptive-icon.png',
+      backgroundColor: '#ffffff',
+    },
+    edgeToEdgeEnabled: true,
+    package: 'com.esteban77orjuela.NoteApp',
+  },
+  web: {
+    favicon: './assets/favicon.png',
+  },
+  extra: {
+    eas: {
+      projectId: 'cdbf2616-3ec1-459c-b6bd-bdd93fbc9d56',
+    },
+    ai: {
+      provider: 'openai',
+      model: 'gpt-4o-mini',
+      openaiApiKey: OPENAI_API_KEY,
+    },
+  },
+};
+
+export default config;

@@ -317,6 +317,7 @@ const NotesScreen: React.FC = () => {
               initialTitle={editingNote?.title}
               initialContent={editingNote?.content}
               initialCategory={editingNote?.category}
+              isEditing={!!editingNote}
             />
           </Modal>
 

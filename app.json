@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -29,6 +29,11 @@
     "extra": {
       "eas": {
         "projectId": "cdbf2616-3ec1-459c-b6bd-bdd93fbc9d56"
+      },
+      "ai": {
+        "provider": "openai",
+        "model": "gpt-4o-mini",
+        "openaiApiKey": ""
       }
     }
   }

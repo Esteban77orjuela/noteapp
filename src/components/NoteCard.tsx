@@ -16,6 +16,7 @@ interface NoteCardProps {
   note: Note;
   onEdit: () => void;
   onDelete: () => void;
+  isDarkMode?: boolean;
 }
 
 /**
@@ -25,7 +26,7 @@ interface NoteCardProps {
  * @param {NoteCardProps} props - Las propiedades del componente.
  * @returns {JSX.Element} El componente NoteCard renderizado.
  */
-const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete }) => {
+const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete, isDarkMode = false }) => {
   const [isPreview, setIsPreview] = useState(true); // Estado para alternar entre vista previa y vista completa
   const [animation] = useState(new Animated.Value(0)); // Valor de animación
   
@@ -59,6 +60,16 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete }) => {
     outputRange: [0, 1],
   });
 
+  // Paleta según tema
+  const cardGradientColors: [string, string] = isDarkMode
+    ? ['#2a2a2a', '#141414']
+    : [THEME_COLORS.secondary, THEME_COLORS.tertiary];
+  const titleColor = isDarkMode ? '#FFFFFF' : THEME_COLORS.lightText;
+  const contentColor = isDarkMode ? '#E6E6E6' : '#f0f0f0';
+  const categoryColor = isDarkMode ? '#B0B0B0' : '#E0E0E0';
+  const dateColor = isDarkMode ? '#9E9E9E' : '#cccccc';
+  const previewBtnBg = isDarkMode ? '#3a3a3a' : THEME_COLORS.primary;
+
   return (
     <Animated.View
       style={[
@@ -70,21 +81,21 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete }) => {
       ]}
     >
       <LinearGradient
-        colors={[THEME_COLORS.secondary, THEME_COLORS.tertiary]}
+        colors={cardGradientColors}
         style={styles.cardContainer}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
       >
-        <Text style={styles.categoryText} accessibilityLabel={`Categoría: ${note.category}`}>{note.category}</Text>
-        <Text style={styles.titleText} accessibilityLabel={`Título: ${note.title}`}>{note.title}</Text>
-        <Text style={styles.contentText} numberOfLines={isPreview ? 3 : undefined} accessibilityLabel={`Contenido: ${note.content}`}>
+        <Text style={[styles.categoryText, { color: categoryColor }]} accessibilityLabel={`Categoría: ${note.category}`}>{note.category}</Text>
+        <Text style={[styles.titleText, { color: titleColor }]} accessibilityLabel={`Título: ${note.title}`}>{note.title}</Text>
+        <Text style={[styles.contentText, { color: contentColor }]} numberOfLines={isPreview ? 3 : undefined} accessibilityLabel={`Contenido: ${note.content}`}>
           {note.content}
         </Text>
-        <Text style={styles.dateText} accessibilityLabel={`Fecha: ${formattedDate}`}>{formattedDate}</Text>
+        <Text style={[styles.dateText, { color: dateColor }]} accessibilityLabel={`Fecha: ${formattedDate}`}>{formattedDate}</Text>
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity
-            style={[styles.button, styles.previewButton]}
+            style={[styles.button, styles.previewButton, { backgroundColor: previewBtnBg }]}
             onPress={() => setIsPreview(!isPreview)}
             accessibilityLabel={isPreview ? 'Ver más contenido' : 'Ver menos contenido'}
             accessibilityHint="Toca para expandir o contraer el contenido de la nota"
