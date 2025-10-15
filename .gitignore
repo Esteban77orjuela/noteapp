@@ -22,8 +22,6 @@ android/build/
 android/.idea/
 android/*.iml
 android/local.properties
-android/gradlew
-android/gradlew.bat
 
 # iOS
 ios/build/
